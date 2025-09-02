@@ -72,17 +72,6 @@ const EMISSION_FACTORS = {
     "3-5-vezes": 1.5,
     diariamente: 2.0,
   },
-
-  // Bens e serviços (tCO2e por R\$ 1000)
-  goods: {
-    eletronicos: 0.5,
-    vestuario: 0.8,
-    viagens: 0.3,
-    moveis: 0.4,
-    eletrodomesticos: 0.6,
-    "servicos-financeiros": 0.1,
-    outros: 0.3,
-  },
 };
 
 // Inicialização
@@ -324,7 +313,7 @@ function calculatePFEmissions(data) {
   if (data.veiculo.possui && data.veiculo.consumo > 0) {
     const fatorCombustivel =
       EMISSION_FACTORS.fuels[data.veiculo.combustivel] || 0;
-    results.transporte += (data.veiculo.consumo * fatorCombustivel) / 6;
+    results.transporte += data.veiculo.consumo * fatorCombustivel * 8.66;
     results.breakdown.veiculo = data.veiculo.consumo * fatorCombustivel;
   }
 
@@ -469,7 +458,7 @@ function displayResults(results) {
         </div>
         
         <div class="results-chart">
-            <canvas id="emissions-chart" width="400" height="200"></canvas>
+            <canvas id="emissions-chart" width="00" height="00"></canvas>
         </div>
         
         <table class="results-table">
@@ -537,39 +526,10 @@ function createEmissionsChart(results) {
     { label: "Residencial", value: results.residencial, color: "#36A2EB" },
     { label: "Resíduos", value: results.residuos, color: "#FFCE56" },
     { label: "Alimentação", value: results.alimentacao, color: "#4BC0C0" },
-    { label: "Bens e Serviços", value: results.bensServicos, color: "#9966FF" },
+    ,
   ];
 
   // Gráfico de pizza simples
-  const centerX = canvas.width / 2;
-  const centerY = canvas.height / 2;
-  const radius = Math.min(centerX, centerY) - 20;
-
-  let currentAngle = 0;
-
-  data.forEach((item) => {
-    const sliceAngle = (item.value / results.total) * 2 * Math.PI;
-
-    // Desenhar fatia
-    ctx.beginPath();
-    ctx.arc(centerX, centerY, radius, currentAngle, currentAngle + sliceAngle);
-    ctx.lineTo(centerX, centerY);
-    ctx.fillStyle = item.color;
-    ctx.fill();
-
-    // Desenhar label
-    const labelAngle = currentAngle + sliceAngle / 2;
-    const labelX = centerX + Math.cos(labelAngle) * (radius + 30);
-    const labelY = centerY + Math.sin(labelAngle) * (radius + 30);
-
-    ctx.fillStyle = "#333";
-    ctx.font = "12px Inter";
-    ctx.textAlign = "center";
-    ctx.fillText(item.label, labelX, labelY);
-    ctx.fillText(`${item.value.toFixed(1)} tCO₂e`, labelX, labelY + 15);
-
-    currentAngle += sliceAngle;
-  });
 }
 
 // Opções de neutralização
